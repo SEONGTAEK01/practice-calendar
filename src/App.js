@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 
 function MyCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [events, setEvents] = useState({});
 
   const customStyles = {
     width: "800px",
@@ -12,6 +13,24 @@ function MyCalendar() {
 
   const handleClickDay = (date) => {
     setSelectedDate(date);
+
+    const eventName = prompt("Enter event name: ");
+    if (eventName) {
+      if (events[date.toDateString()]) {
+        events[date.toDateString()].push(eventName);
+      } else {
+        events[date.toDateString()] = [eventName];
+      }
+      setEvents(events);
+    }
+  };
+
+  const tileContent = ({ date, view }) => {
+    if (view === "month" && events[date.toDateString()]) {
+      return events[date.toDateString()].map((event) => (
+        <div key={event}>{event}</div>
+      ));
+    }
   };
 
   return (
@@ -20,6 +39,7 @@ function MyCalendar() {
         value={selectedDate}
         onClickDay={handleClickDay}
         style={customStyles}
+        tileContent={tileContent}
       />
       <p>Selected Date: {selectedDate.toDateString()}</p>
     </div>
